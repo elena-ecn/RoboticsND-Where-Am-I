@@ -25,18 +25,70 @@ The map of the environment was created with the [pgm_map_creator](https://github
 For a successful localization of the mobile robot, there are many parameters that need to be tuned for a specific robot and environment setup. Some of these parameters have been tuned and set in the config directory in order to make the robot accurately localize itself.
 
 
+#### Rviz visualization 
 
+<br>
 
+![Particles](images/particles.png)
 
-Rviz
+Navigation Stack
+* We can see from the global cost map that the obstacles are inflated to provide a safety zone.
+* The local cost map is represented by the white rectangle around the robot. The white space denotes free space and the black portions denote obstacles.
+* The green and purple lines to the goal represent the local and global paths towards the given goal.
 
+Sensors
+* The red lines/dots on the walls and obstacles are formed by a LiDAR point cloud as measured by the sensor on top of the robot.
+
+AMCL
+* The red arrows represent the particles of the Adaptive Monte-Carlo Localization node. They denote the possible robot poses in the environment. 
+
+At the begining, there are many particles spread around. As soon as the robot starts moving, it gets more confident about its location and the particles quickly converge to the true pose.
 
 Structure
 ---------
 
 There are two packages in this project.
 * **my_robot**: This package holds the robot and the Gazebo world.
-* **where-am-i**:
+* **where-am-i**: The localization of the robot with the Monte Carlo Localization `amcl` package, as well as the navigation functionality.
+
+
+The directory structure is depicted below:
+```
+.RoboND-Where-Am-I              # Where Am I Project
+├── my_robot                    # my_robot package
+│   ├── CMakeLists.txt          # compiler instructions
+│   ├── launch
+│   │   ├── robot_description.launch
+│   │   └── world.launch
+│   ├── meshes
+│   │   └── hokuyo.dae
+│   ├── package.xml
+│   ├── rviz
+│   │   └── rvizconfig_where_am_i.rviz
+│   ├── urdf
+│   │   ├── my_robot.gazebo
+│   │   └── my_robot.xacro
+│   └── worlds
+│       └── myworld_project3.world
+├── where_am_i                  # where_am_i package
+│   ├── CMakeLists.txt          # compiler instructions
+│   ├── config
+│   │   ├── base_local_planner_params.yaml
+│   │   ├── costmap_common_params.yaml
+│   │   ├── global_costmap_params.yaml
+│   │   └── local_costmap_params.yaml
+│   ├── launch
+│   │   └── amcl.launch
+│   ├── maps
+│   │   ├── mymap.pgm
+│   │   └── mymap.yaml
+│   └── package.xml
+└── images                         # simulation images
+    ├── localization.gif
+    ├── navigation.gif
+    └── particles.png
+```
+
 
 Technologies
 ------------
@@ -90,7 +142,7 @@ $ source devel/setup.bash
 
 #### Launch the simulation environment.
 ```sh
-$ roslaunch where_am_i world.launch
+$ roslaunch my_robot world.launch
 ```
 
 #### Launch the amcl localization.
